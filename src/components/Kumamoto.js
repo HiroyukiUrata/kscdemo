@@ -1,5 +1,5 @@
 import { useState,useEffect,useRef } from "react";
-import { Viewer, Entity, Cesium3DTileset,KmlDataSource,GeoJsonDataSource,CzmlDataSource,BoxGraphics,PolygonGraphics } from "resium";
+import { CameraFlyTo,Viewer, Entity, Cesium3DTileset,KmlDataSource,GeoJsonDataSource,CzmlDataSource,BoxGraphics,PolygonGraphics } from "resium";
 import Cesium, { Cartesian3,HeightReference, Math as CesiumMath,Color  } from "cesium";
 
 
@@ -53,9 +53,28 @@ const Kumamoto = () => {
     setExtrudedHeight(parseFloat(event.target.value));
   };
 
-  const xxxx = () =>{
-    setLayer1(!layer1);
-  }
+  useEffect(() => {
+    async function handleZoomWithRecords() {
+      // records を使った非同期処理を実行する
+      // ズーム処理を実行する
+      autoZoom();
+    }
+    handleZoomWithRecords();
+  }, []);
+
+  const autoZoom = () => {
+    const viewer = viewerRef.current.cesiumElement;
+  
+    viewer.camera.flyTo({
+      destination: Cartesian3.fromDegrees(130.564705, 32.924917, 100),
+      duration: 0,
+      orientation:{
+        heading: CesiumMath.toRadians(0),
+        pitch: CesiumMath.toRadians(-20),
+      }
+    });
+
+  };
 
 
   return (
@@ -94,12 +113,20 @@ const Kumamoto = () => {
         
       </div>
 
+      {/* <CameraFlyTo
+        destination={Cartesian3.fromDegrees(130.564705, 32.924917, 100)}
+        duration={0}
+        orientation={{
+          heading: CesiumMath.toRadians(0),
+          pitch: CesiumMath.toRadians(-20),
+        }} 
+      />*/}
       {layer4 && (
         <>
           <Cesium3DTileset
             url="./tamana/tileset.json"
             onReady={(tileset) => {
-              viewerRef.current?.cesiumElement?.zoomTo(tileset);
+              // viewerRef.current?.cesiumElement?.zoomTo(tileset);
             }}
         />
           <Entity position={Cartesian3.fromDegrees(-117.0, 35.0, 100000.0)}>
