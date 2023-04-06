@@ -13,6 +13,7 @@ const Kumamoto = () => {
   const [layer1, setLayer1] = useState(false);
   const [layer2, setLayer2] = useState(false);
   const [layer3, setLayer3] = useState(false);
+  const [layer4, setLayer4] = useState(false);
 
   const czml1 = [
     {
@@ -66,7 +67,14 @@ const Kumamoto = () => {
         <input type="range" min="0" max="100" defaultValue="0" onChange={handleExtrudedHeightChange} step="5" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"/>
       
  
-
+        <button
+          class="bg-blue-300 hover:bg-blue-200 text-white rounded px-4 py-2 mx-1"
+          onClick={() =>{
+            setLayer4(!layer4);
+          }}
+        >
+          玉名市 LOD１
+        </button>
         <button
           class="bg-red-300 hover:bg-red-200 text-white rounded px-4 py-2 mx-1"
           onClick={() =>{
@@ -93,6 +101,28 @@ const Kumamoto = () => {
         </button>
         
       </div>
+
+      {layer4 && (
+        <>
+          <Cesium3DTileset
+            url="./tamana/tileset.json"
+            onReady={(tileset) => {
+              viewerRef.current?.cesiumElement?.zoomTo(tileset);
+            }}
+        />
+          <Entity position={Cartesian3.fromDegrees(-117.0, 35.0, 100000.0)}>
+          <PolygonGraphics
+            hierarchy={Cartesian3.fromDegreesArrayHeights([    
+              130.467004,32.992300, 0,
+              130.467004,32.839549, 0,
+              130.627679,32.839549, 0,
+              130.627679,32.992300, 0,])}
+            extrudedHeight={extrudedHeight}
+            material={Color.ORANGE.withAlpha(0.2)}
+          />
+        </Entity>
+        </>
+      )}
       {layer1 && (
         <Cesium3DTileset
           url="./kumamoto/tileset.json"
@@ -119,12 +149,12 @@ const Kumamoto = () => {
       {/* {layer2 && (
         
       )}  */}
-      <KmlDataSource data={"./kumamoto/mouzu.kml"} show={layer2}/>
+      <KmlDataSource data={"./nagasu/mouzu.kml"} show={layer2}/>
  
       <Entity
         position={Cartesian3.fromDegrees(130.45, 32.93, 0)}
         model={{
-          uri: "./kumamoto/nagasu.glb",
+          uri: "./nagasu/nagasu.glb",
           scale: 1.5,
         }}
         show={layer3}
