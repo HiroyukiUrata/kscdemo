@@ -76,14 +76,6 @@ const Kumamoto = () => {
           玉名市 LOD１
         </button>
         <button
-          class="bg-red-300 hover:bg-red-200 text-white rounded px-4 py-2 mx-1"
-          onClick={() =>{
-            setLayer1(!layer1);
-          }}
-        >
-          熊本市 LOD１
-        </button>
-        <button
           class="bg-green-300 hover:bg-green-200 text-white rounded px-4 py-2 mx-1"
           onClick={() =>{
             setLayer2(!layer2);
@@ -123,32 +115,7 @@ const Kumamoto = () => {
         </Entity>
         </>
       )}
-      {layer1 && (
-        <Cesium3DTileset
-          url="./kumamoto/tileset.json"
-          onReady={(tileset) => {
-            viewerRef.current?.cesiumElement?.zoomTo(tileset);
-          }}
-        />
-      )}
-        <Entity position={Cartesian3.fromDegrees(-117.0, 35.0, 100000.0)}>
-          <PolygonGraphics
-            hierarchy={Cartesian3.fromDegreesArrayHeights([    
-              130.508148,32.802076, 0,
-              130.508148,32.743842, 0,
-              130.792225,32.743842, 0,
-              130.792225,32.802076, 0,])}
-            extrudedHeight={extrudedHeight}
-            material={Color.BLUE.withAlpha(0.2)}
-          />
-        </Entity>
-        
-      {/* <KmlDataSource data={"./kumamoto/your_geo_json.kml"}/> */}
-      {/* <GeoJsonDataSource data={"./kumamoto/mouzu.geojson"}/> */}
-      
-      {/* {layer2 && (
-        
-      )}  */}
+
       <KmlDataSource data={"./nagasu/mouzu.kml"} show={layer2}/>
  
       <Entity
@@ -160,16 +127,6 @@ const Kumamoto = () => {
         show={layer3}
       />
 
-      {/* <Entity
-        name="BoxGraphics"
-        description="BoxGraphics!!"
-        position={Cartesian3.fromDegrees(130.655797, 32.769116, 100)}
-      >
-        <BoxGraphics
-          material={Color.RED}
-          dimensions={new Cartesian3(400000.0, 300000.0, 500000.0)}
-        />
-      </Entity> */}
     </Viewer>
   );
 }
