@@ -110,7 +110,7 @@ const Kumamoto = () => {
               130.627679,32.839549, 0,
               130.627679,32.992300, 0,])}
             extrudedHeight={extrudedHeight}
-            material={Color.ORANGE.withAlpha(0.2)}
+            material={Color.BLUE.withAlpha(0.2)}
           />
         </Entity>
         </>
