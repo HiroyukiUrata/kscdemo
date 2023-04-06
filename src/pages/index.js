@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
-import 'tailwindcss/tailwind.css';
+// import 'tailwindcss/tailwind.css';
 import Kumamoto from '../components/Kumamoto';
 
 const Cesium = dynamic(
