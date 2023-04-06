@@ -89,7 +89,7 @@ const Kumamoto = () => {
             setLayer3(!layer3);
           }}
         >
-          長洲町建物
+          長洲町建物 
         </button>
         
       </div>
