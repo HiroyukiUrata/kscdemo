@@ -1,7 +1,7 @@
 import { useState,useEffect,useRef } from "react";
-import { CameraFlyTo,Viewer, Entity, Cesium3DTileset,KmlDataSource,GeoJsonDataSource,CzmlDataSource,BoxGraphics,PolygonGraphics } from "resium";
-import Cesium, { Cartesian3,HeightReference, Math as CesiumMath,Color  } from "cesium";
-
+import {Clock, CameraFlyTo,Viewer, Entity, Cesium3DTileset,KmlDataSource,GeoJsonDataSource,CzmlDataSource,BoxGraphics,PolygonGraphics } from "resium";
+import Cesium, { Cartesian3,HeightReference, Math as CesiumMath,Color,JulianDate,SampledPositionProperty,TimeInterval,TimeIntervalCollection,PathGraphics,VelocityOrientationProperty } from "cesium";
+import data from "./flightdata.json";
 
 const Kumamoto = () => {
   const viewerRef = useRef();
@@ -9,6 +9,7 @@ const Kumamoto = () => {
   function handleChangeDepth(event) {
     setDepth(Number(event.target.value));
   }
+  const [clock, setClock] = useState();
 
   const [layer1, setLayer1] = useState(false);
   const [layer2, setLayer2] = useState(false);
@@ -76,7 +77,56 @@ const Kumamoto = () => {
 
   };
 
+  function startTrace(){
+    const positionProperty = new SampledPositionProperty();
+    const timeStepInSeconds = 30;
+    const totalSeconds = timeStepInSeconds * (data.length - 1);
+    const start = JulianDate.fromIso8601("2023-03-09T23:10:00Z");
+    const stop = JulianDate.addSeconds(start,totalSeconds,new JulianDate());
+  
+    const flightData = data.map((item, index) => {
+      const time = JulianDate.addSeconds(start, index * timeStepInSeconds, new JulianDate());
+      const position = Cartesian3.fromDegrees(item.longitude, item.latitude, item.height);
+  
+ 
+      positionProperty.addSample(time,position)
+    })
+    
+  
+    const viewer = viewerRef.current.cesiumElement;
+     
+    const airplaneLine=<Entity
+    availability={new TimeIntervalCollection([new TimeInterval({start:start,stop:stop})])}
+    position={positionProperty}
+    // point={{pixcelsize:'30',color:Color.GREEN}}
+    model={{
+      uri:'airplane.gltf',
+      minimumPixelSize:100,
+      // maximamScale:2000,
+      outlineColor:Color.WHITE
+    }}
+    orientation={new VelocityOrientationProperty(positionProperty)}
+    path={new PathGraphics({width:2})}
+     tracked
+    //  selected
+    />
 
+    const clock = (
+      <Clock
+      startTime={start}
+      stopTime={stop}
+      currentTime={start}
+      multiplier={10}
+      shouldAnimate={true}
+    >
+
+      {airplaneLine}
+    </Clock>      
+    )
+    setClock(clock);
+    //TODO:クォータービュー
+  }
+  
   return (
     <Viewer ref={viewerRef}>
       <div class="absolute top-0 left-0 rounded mx-1 my-1">
@@ -110,8 +160,14 @@ const Kumamoto = () => {
         >
           長洲町建物 
         </button>
-        
-      </div>
+        <button
+                class="bg-red-300 hover:bg-red-200 text-white rounded px-4 py-2 mx-1"
+                onClick={startTrace}
+                // onClick={startAnimation}
+              >        
+         周遊 
+        </button>
+       </div>
 
       {/* <CameraFlyTo
         destination={Cartesian3.fromDegrees(130.564705, 32.924917, 100)}
@@ -153,7 +209,7 @@ const Kumamoto = () => {
         }}
         show={layer3}
       />
-
+    {clock}
     </Viewer>
   );
 }
