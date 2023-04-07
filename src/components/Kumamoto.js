@@ -142,7 +142,7 @@ const Kumamoto = () => {
             setLayer4(!layer4);
           }}
         >
-          玉名市 LOD１
+          玉名市 LOD2
         </button>
         <button
           class="bg-green-300 hover:bg-green-200 text-white rounded px-4 py-2 mx-1"
